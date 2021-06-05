@@ -44,15 +44,14 @@ app.delete('/trip', async (req, res) => {
     const idIsExist = await trips.findOne({ _id: id })
 
     if (!idIsExist) {
-      console.log('No such_Id')
+      console.log('No such _id')
       res.status(400).json({ err: 'No such _id' })
       return
     }
 
-    const result = await trips.deleteOne({ _id: id })
+    const { deletedCount } = await trips.deleteOne({ _id: id })
 
-    console.log(result)
-    res.status(200).json({ ok: result })
+    res.status(200).json({ deletedCount })
   } catch (error) {
     console.error(error)
     res.status(500).json({ err: error })
