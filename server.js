@@ -58,15 +58,14 @@ app.delete('/trip', async (req, res) => {
   }
 })
 
-app.get('/trips', (req, res) => {
-  trips.find().toArray((err, items) => {
-    if (err) {
-      console.error(err)
-      res.status(500).json({ err: err })
-      return
-    }
+app.get('/trips', async (req, res) => {
+  try {
+    const items = await trips.find().toArray()
     res.status(200).json({ trips: items })
-  })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ err: err })
+  }
 })
 
 app.post('/expense', (req, res) => {
