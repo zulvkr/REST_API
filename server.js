@@ -84,15 +84,14 @@ app.post('/expense', (req, res) => {
   }
 })
 
-app.get('/expenses', (req, res) => {
-  expenses.find({ trip: req.body.trip }).toArray((err, items) => {
-    if (err) {
-      console.error(err)
-      res.status(500).json({ err: err })
-      return
-    }
+app.get('/expenses', async (req, res) => {
+  try {
+    const items = await expenses.find({ trip: req.body.trip }).toArray()
     res.status(200).json({ trips: items })
-  })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ err: err })
+  }
 })
 
 app.listen(3000, () => console.log('Server ready'))
