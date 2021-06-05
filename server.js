@@ -38,6 +38,29 @@ app.post('/trip', (req, res) => {
   })
 })
 
+app.delete('/trip', async (req, res) => {
+  
+  try {
+    const id = new mongo.ObjectId(req.body.id)
+    const idIsExist = await trips.findOne({ _id: id })
+
+    if (!idIsExist) {
+      console.log('No such_Id')
+      res.status(400).json({ err: 'No such _id' })
+      return
+    }
+
+    const result = await trips.deleteOne({ _id: id })
+
+    console.log(result)
+    res.status(200).json({ ok: result })
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ err: error })
+  }
+})
+
 app.get('/trips', (req, res) => {
   trips.find().toArray((err, items) => {
     if (err) {
@@ -48,6 +71,7 @@ app.get('/trips', (req, res) => {
     res.status(200).json({ trips: items })
   })
 })
+
 app.post('/expense', (req, res) => {
   expenses.insertOne(
     {
@@ -67,6 +91,7 @@ app.post('/expense', (req, res) => {
     }
   )
 })
+
 app.get('/expenses', (req, res) => {
   expenses.find({ trip: req.body.trip }).toArray((err, items) => {
     if (err) {
