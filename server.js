@@ -68,7 +68,7 @@ app.get('/trips', async (req, res) => {
   }
 })
 
-app.post('/expense', (req, res) => {
+app.post('/expense', async (req, res) => {
   try {
     await expenses.insertOne({
       trip: req.body.trip,
