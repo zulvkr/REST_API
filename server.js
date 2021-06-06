@@ -44,7 +44,6 @@ app.put('/trip/:id', async (req, res) => {
       { _id: id },
       { $set: { name: newName } }
     )
-    console.log(id, newName );
     res.status(200).json({ modifiedCount, matchedCount })
   } catch (err) {
     console.error(err)
@@ -96,10 +95,16 @@ app.post('/expense', async (req, res) => {
 
 app.get('/expenses', async (req, res) => {
   try {
-    const { category } = req.query
+    let { category, limit = 3, offset = 0 } = req.query
     let items = await expenses.find({ trip: req.body.trip }).toArray()
     if (category) {
-      items =  items.filter( r => r.category === category)
+      items = items.filter(r => r.category === category)
+    }
+    console.log(+limit,+offset)
+    if (limit) {
+      startIndex = +offset * limit
+      endIndex = startIndex + limit
+      items = items.slice(startIndex, endIndex)
     }
     res.status(200).json({ trips: items })
   } catch (err) {
