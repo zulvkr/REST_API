@@ -95,16 +95,25 @@ app.post('/expense', async (req, res) => {
 
 app.get('/expenses', async (req, res) => {
   try {
-    let { category, limit = 3, offset = 0 } = req.query
+    let { category, limit = 3, offset = 0, sort } = req.query
     let items = await expenses.find({ trip: req.body.trip }).toArray()
     if (category) {
       items = items.filter(r => r.category === category)
     }
-    console.log(+limit,+offset)
     if (limit) {
       startIndex = +offset * limit
       endIndex = startIndex + limit
       items = items.slice(startIndex, endIndex)
+    }
+    if (sort) {
+      switch (sort) {
+        case '+amount':
+          items = items.sort((a, b) => a.amount - b.amount)
+          break
+        case '-amount':
+          items = items.sort((b, a) => a.amount - b.amount)
+          break
+      }
     }
     res.status(200).json({ trips: items })
   } catch (err) {
