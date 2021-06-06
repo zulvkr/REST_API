@@ -55,13 +55,13 @@ app.delete('/trip/:id', async (req, res) => {
   try {
     const id = new mongo.ObjectId(req.params.id)
     const { deletedCount } = await trips.deleteOne({ _id: id })
-    if (deletedCount) {
+    if (!deletedCount) {
       console.error('No trip with such _id')
       res.status(400).json({ err: 'No trip with such _id' })
       return
     }
     res.status(200).json({ deletedCount })
-  } catch (error) {
+  } catch (err) {
     console.error(err)
     res.status(500).json({ error: err.toString() })
   }
