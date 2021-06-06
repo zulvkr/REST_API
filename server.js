@@ -28,13 +28,27 @@ mongo.connect(
 app.post('/trip', async (req, res) => {
   try {
     const name = req.body.name
-    const result = await trips.insertOne({ name: name })
-
+    const { insertedId } = await trips.insertOne({ name })
     console.log(result)
-    res.status(200).json({ ok: true })
+    res.status(200).json({ insertedId })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err: err })
+    res.status(500).json({ err })
+  }
+})
+
+app.put('/trip/:id', async (req, res) => {
+  try {
+    const id = req.params.id
+    const newName = req.body.name
+    const { modifiedCount } = await trips.updateOne(
+      { id },
+      { $set: { name: newName } }
+    )
+    res.status(200).json({ modifiedCount })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ err })
   }
 })
 
@@ -49,8 +63,8 @@ app.delete('/trip/:id', async (req, res) => {
     }
     res.status(200).json({ deletedCount })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ err: error })
+    console.error(err)
+    res.status(500).json({ err })
   }
 })
 
@@ -60,23 +74,23 @@ app.get('/trips', async (req, res) => {
     res.status(200).json({ trips: items })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err: err })
+    res.status(500).json({ err })
   }
 })
 
 app.post('/expense', async (req, res) => {
   try {
-    await expenses.insertOne({
+    const { insertedId } = await expenses.insertOne({
       trip: req.body.trip,
       date: req.body.date,
       amount: req.body.amount,
       category: req.body.category,
       description: req.body.description
     })
-    res.status(200).json({ ok: true })
+    res.status(200).json({ insertedId })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err: err })
+    res.status(500).json({ err })
   }
 })
 
@@ -86,7 +100,7 @@ app.get('/expenses', async (req, res) => {
     res.status(200).json({ trips: items })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err: err })
+    res.status(500).json({ err })
   }
 })
 
