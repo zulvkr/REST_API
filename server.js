@@ -39,13 +39,14 @@ app.post('/trip', async (req, res) => {
 
 app.put('/trip/:id', async (req, res) => {
   try {
-    const id = req.params.id
+    const id = new mongo.ObjectId(req.params.id)
     const newName = req.body.name
-    const { modifiedCount } = await trips.updateOne(
-      { id },
+    const { modifiedCount, matchedCount } = await trips.updateOne(
+      { _id: id },
       { $set: { name: newName } }
     )
-    res.status(200).json({ modifiedCount })
+    console.log(id, newName );
+    res.status(200).json({ modifiedCount, matchedCount })
   } catch (err) {
     console.error(err)
     res.status(500).json({ err })
