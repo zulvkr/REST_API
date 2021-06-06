@@ -96,7 +96,11 @@ app.post('/expense', async (req, res) => {
 
 app.get('/expenses', async (req, res) => {
   try {
-    const items = await expenses.find({ trip: req.body.trip }).toArray()
+    const { category } = req.query
+    let items = await expenses.find({ trip: req.body.trip }).toArray()
+    if (category) {
+      items =  items.filter( r => r.category === category)
+    }
     res.status(200).json({ trips: items })
   } catch (err) {
     console.error(err)
