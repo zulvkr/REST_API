@@ -38,19 +38,15 @@ app.post('/trip', async (req, res) => {
   }
 })
 
-app.delete('/trip', async (req, res) => {
+app.delete('/trip/:id', async (req, res) => {
   try {
-    const id = new mongo.ObjectId(req.body.id)
-    const idIsExist = await trips.findOne({ _id: id })
-
-    if (!idIsExist) {
-      console.log('No such _id')
-      res.status(400).json({ err: 'No such _id' })
+    const id = new mongo.ObjectId(req.params.id)
+    const { deletedCount } = await trips.deleteOne({ _id: id })
+    if (deletedCount) {
+      console.error('No trip with such _id')
+      res.status(400).json({ err: 'No trip with such _id' })
       return
     }
-
-    const { deletedCount } = await trips.deleteOne({ _id: id })
-
     res.status(200).json({ deletedCount })
   } catch (error) {
     console.error(error)
