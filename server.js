@@ -16,7 +16,7 @@ mongo.connect(
   },
   (err, client) => {
     if (err) {
-      console.err(error)
+      console.error(err)
       return
     }
     db = client.db('tripcost')
@@ -29,11 +29,10 @@ app.post('/trip', async (req, res) => {
   try {
     const name = req.body.name
     const { insertedId } = await trips.insertOne({ name })
-    console.log(result)
     res.status(200).json({ insertedId })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err })
+    res.status(500).json({ error: err.toString() })
   }
 })
 
@@ -49,7 +48,7 @@ app.put('/trip/:id', async (req, res) => {
     res.status(200).json({ modifiedCount, matchedCount })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err })
+    res.status(500).json({ error: err.toString() })
   }
 })
 
@@ -65,7 +64,7 @@ app.delete('/trip/:id', async (req, res) => {
     res.status(200).json({ deletedCount })
   } catch (error) {
     console.error(err)
-    res.status(500).json({ err })
+    res.status(500).json({ error: err.toString() })
   }
 })
 
@@ -75,7 +74,7 @@ app.get('/trips', async (req, res) => {
     res.status(200).json({ trips: items })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err })
+    res.status(500).json({ error: err.toString() })
   }
 })
 
@@ -91,7 +90,7 @@ app.post('/expense', async (req, res) => {
     res.status(200).json({ insertedId })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err })
+    res.status(500).json({ error: err.toString() })
   }
 })
 
@@ -101,7 +100,7 @@ app.get('/expenses', async (req, res) => {
     res.status(200).json({ trips: items })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ err })
+    res.status(500).json({ error: err.toString() })
   }
 })
 
